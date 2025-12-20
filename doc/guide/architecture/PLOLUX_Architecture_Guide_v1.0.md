@@ -51,9 +51,17 @@ packages/plolux/
 │   │   ├── utils.ts              # 공용 함수 (Date formatter, etc.)
 │   │   └── constants.ts          # 전역 상수 관리 (설정값, 메시지 등)
 │   │
-│   ├── styles/                   # [Design Layer] 스타일 및 테마 정의
-│   │   ├── tokens.css            # CSS 변수 (Figma Variables 매핑)
-│   │   └── globals.css           # 전역 스타일 및 Reset
+│   ├── styles/                   # [Design Layer] 전역 스타일 및 디자인 토큰 관리 (SCSS)
+│   │   ├── abstracts/            # (Zero-Output) 변수, 믹스인, 함수 모음 - 디자인 시스템의 핵심
+│   │   │   ├── _variables.scss   # Color, Font, Spacing, Breakpoints 등 디자인 토큰
+│   │   │   ├── _mixins.scss      # 반응형 분기, Flex/Grid 패턴 등 재사용 로직
+│   │   │   └── _functions.scss   # px-to-rem 등 스타일 연산 함수
+│   │   ├── base/                 # (Global-Output) 프로젝트 전역 기반 스타일
+│   │   │   ├── _reset.scss       # 브라우저 기본 스타일 초기화
+│   │   │   ├── _typography.scss  # 웹 폰트 로드 및 전역 텍스트 스타일
+│   │   │   └── _base.scss        # HTML, Body, 공통 레이아웃 설정
+│   │   ├── main.scss             # 위 파일들을 통합하여 App에 주입하는 진입점
+│   │   └── (modules)             # (참고) 컴포넌트별 스타일은 각 컴포넌트 폴더 내 *.module.scss 권장
 │   │
 │   └── types/                    # [Type Layer] 전역 타입 및 공통 모델 정의 (DTO 역할)
 │       └── global.d.ts
@@ -112,5 +120,10 @@ packages/plolux/
     - 복잡한 로직이나 데이터 처리가 필요하다면? → `src/features`
     - 새로운 페이지를 만들어야 한다면? → `src/app`
 3.  **레이아웃 분리**:
-    - **공개 사이트** 수정 시: `src/app/(site)` 하위 작업.
-    - **관리자 페이지** 수정 시: `src/app/(admin)` 하위 작업.
+4.  **절대 경로 Import 사용 의무화**:
+    - 파일 import 시 상대 경로(`../../components/Button`) 대신 **절대 경로(`src/components/Button`)를 사용**하십시오.
+    - 이는 프로젝트 구조가 변경되어도 import 경로가 깨지지 않게 하고, 코드 가독성을 높여줍니다.
+    - 예시:
+      - (O) `import Button from 'src/components/atomic/Button';`
+      - (O) `@use "src/styles/abstracts/variables" as v;`
+      - (X) `import Button from '../../../components/atomic/Button';`
